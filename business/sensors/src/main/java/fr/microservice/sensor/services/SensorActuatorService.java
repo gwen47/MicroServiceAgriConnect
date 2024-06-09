@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import fr.microservice.sensor.entities.Actuator;
 import fr.microservice.sensor.entities.IrrigationLog;
 import fr.microservice.sensor.entities.Sensor;
+import fr.microservice.sensor.exceptions.DuplicateCodeException;
+import fr.microservice.sensor.exceptions.ResourceNotFoundException;
 import fr.microservice.sensor.repositories.ActuatorRepository;
 import fr.microservice.sensor.repositories.IrrigationLogRepository;
 import fr.microservice.sensor.repositories.SensorRepository;
@@ -25,36 +27,60 @@ public class SensorActuatorService {
     @Autowired
     private IrrigationLogRepository irrigationLogRepository;
 
+    // List all sensors 
     public List<Sensor> listAllSensors() {
         return sensorRepository.findAll();
     }
 
-    public Sensor getSensor(Long id) {
-        return sensorRepository.findById(id).orElse(null);
+    public Sensor getSensorByCode(String code) {
+        return sensorRepository.findByCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with code: " + code));
     }
 
-    public Actuator getActuator(Long id) {
-        return actuatorRepository.findById(id).orElse(null);
+    public Actuator getActuatorByCode(String code) {
+        return actuatorRepository.findByCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Actuator not found with code: " + code));
     }
 
+    public Sensor getSensorByCoordinates(double latitude, double longitude) {
+        return sensorRepository.findByLatitudeAndLongitude(latitude, longitude)
+                .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with coordinates: " + latitude + ", " + longitude));
+    }
+
+    public Actuator getActuatorByCoordinates(double latitude, double longitude) {
+        return actuatorRepository.findByLatitudeAndLongitude(latitude, longitude)
+                .orElseThrow(() -> new ResourceNotFoundException("Actuator not found with coordinates: " + latitude + ", " + longitude));
+    }
+    
     public Sensor saveSensor(Sensor sensor) {
+        if (sensorRepository.existsByCode(sensor.getCode())) {
+            throw new DuplicateCodeException("Sensor with code " + sensor.getCode() + " already exists.");
+        }
         return sensorRepository.save(sensor);
     }
 
     public Actuator saveActuator(Actuator actuator) {
+        if (actuatorRepository.existsByCode(actuator.getCode())) {
+            throw new DuplicateCodeException("Actuator with code " + actuator.getCode() + " already exists.");
+        }
         return actuatorRepository.save(actuator);
     }
 
-    public void deleteSensor(Long id) {
-        sensorRepository.deleteById(id);
+    public void deleteSensorByCode(String code) {
+        Sensor sensor = sensorRepository.findByCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with code: " + code));
+        sensorRepository.delete(sensor);
     }
 
-    public void deleteActuator(Long id) {
-        actuatorRepository.deleteById(id);
+    public void deleteActuatorByCode(String code) {
+        Actuator actuator = actuatorRepository.findByCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Actuator not found with code: " + code));
+        actuatorRepository.delete(actuator);
     }
 
-    public void startIrrigation(Long actuatorId, long duration) {
-        Actuator actuator = actuatorRepository.findById(actuatorId).orElseThrow(() -> new RuntimeException("Actuator not found"));
+    public void startIrrigation(String actuatorCode, long duration) {
+        Actuator actuator = actuatorRepository.findByCode(actuatorCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Actuator not found with code: " + actuatorCode));
         actuator.setIrrigating(true);
         actuator.setIrrigationDuration(duration);
         actuatorRepository.save(actuator);
@@ -66,8 +92,9 @@ public class SensorActuatorService {
         irrigationLogRepository.save(log);
     }
 
-    public void stopIrrigation(Long actuatorId) {
-        Actuator actuator = actuatorRepository.findById(actuatorId).orElseThrow(() -> new RuntimeException("Actuator not found"));
+    public void stopIrrigation(String actuatorCode) {
+        Actuator actuator = actuatorRepository.findByCode(actuatorCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Actuator not found with code: " + actuatorCode));
         actuator.setIrrigating(false);
         actuator.setIrrigationDuration(0);
         actuatorRepository.save(actuator);
@@ -83,8 +110,9 @@ public class SensorActuatorService {
         return irrigationLogRepository.findAll();
     }
 
-    public void updateMeasurementInterval(Long sensorId, int interval) {
-        Sensor sensor = sensorRepository.findById(sensorId).orElseThrow(() -> new RuntimeException("Sensor not found"));
+    public void updateMeasurementInterval(String sensorCode, int interval) {
+        Sensor sensor = sensorRepository.findByCode(sensorCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with code: " + sensorCode));
         sensor.setMeasurementInterval(interval);
         sensorRepository.save(sensor);
     }

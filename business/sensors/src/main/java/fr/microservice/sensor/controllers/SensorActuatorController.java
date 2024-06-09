@@ -10,6 +10,7 @@ import fr.microservice.sensor.services.SensorActuatorService;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api")
 public class SensorActuatorController {
@@ -17,14 +18,15 @@ public class SensorActuatorController {
     @Autowired
     private SensorActuatorService sensorActuatorService;
 
+    // List all sensors
     @GetMapping("/sensors")
     public List<Sensor> listAllSensors() {
         return sensorActuatorService.listAllSensors();
     }
 
-    @GetMapping("/sensor/{id}")
-    public Sensor getSensor(@PathVariable Long id) {
-        return sensorActuatorService.getSensor(id);
+    @GetMapping("/sensor/{code}")
+    public Sensor getSensorByCode(@PathVariable String code) {
+        return sensorActuatorService.getSensorByCode(code);
     }
 
     @PostMapping("/sensor")
@@ -32,14 +34,14 @@ public class SensorActuatorController {
         return sensorActuatorService.saveSensor(sensor);
     }
 
-    @DeleteMapping("/sensor/{id}")
-    public void deleteSensor(@PathVariable Long id) {
-        sensorActuatorService.deleteSensor(id);
+    @DeleteMapping("/sensor/{code}")
+    public void deleteSensorByCode(@PathVariable String code) {
+        sensorActuatorService.deleteSensorByCode(code);
     }
 
-    @GetMapping("/actuator/{id}")
-    public Actuator getActuator(@PathVariable Long id) {
-        return sensorActuatorService.getActuator(id);
+    @GetMapping("/actuator/{code}")
+    public Actuator getActuatorByCode(@PathVariable String code) {
+        return sensorActuatorService.getActuatorByCode(code);
     }
 
     @PostMapping("/actuator")
@@ -47,19 +49,19 @@ public class SensorActuatorController {
         return sensorActuatorService.saveActuator(actuator);
     }
 
-    @DeleteMapping("/actuator/{id}")
-    public void deleteActuator(@PathVariable Long id) {
-        sensorActuatorService.deleteActuator(id);
+    @DeleteMapping("/actuator/{code}")
+    public void deleteActuatorByCode(@PathVariable String code) {
+        sensorActuatorService.deleteActuatorByCode(code);
     }
 
-    @PostMapping("/actuator/start-irrigation/{id}")
-    public void startIrrigation(@PathVariable Long id, @RequestParam long duration) {
-        sensorActuatorService.startIrrigation(id, duration);
+    @PostMapping("/actuator/start-irrigation/{code}")
+    public void startIrrigation(@PathVariable String code, @RequestParam long duration) {
+        sensorActuatorService.startIrrigation(code, duration);
     }
 
-    @PostMapping("/actuator/stop-irrigation/{id}")
-    public void stopIrrigation(@PathVariable Long id) {
-        sensorActuatorService.stopIrrigation(id);
+    @PostMapping("/actuator/stop-irrigation/{code}")
+    public void stopIrrigation(@PathVariable String code) {
+        sensorActuatorService.stopIrrigation(code);
     }
 
     @GetMapping("/irrigation-logs")
@@ -67,9 +69,9 @@ public class SensorActuatorController {
         return sensorActuatorService.getIrrigationLogs();
     }
 
-    @PostMapping("/sensor/update-interval/{id}")
-    public void updateMeasurementInterval(@PathVariable Long id, @RequestParam int interval) {
-        sensorActuatorService.updateMeasurementInterval(id, interval);
+    @PostMapping("/sensor/update-interval/{code}")
+    public void updateMeasurementInterval(@PathVariable String code, @RequestParam int interval) {
+        sensorActuatorService.updateMeasurementInterval(code, interval);
     }
 
     @PostMapping("/sensors/update-interval")
