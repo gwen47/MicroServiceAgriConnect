@@ -21,7 +21,7 @@ services:
     image: eclipse-mosquitto
     container_name: mqtt
     volumes:
-      - ./config:/mosquitto/config:rw
+      - config:/mosquitto/config:rw
       - data:/mosquitto/data:rw
       - log:/mosquitto/log:rw
     restart: unless-stopped
