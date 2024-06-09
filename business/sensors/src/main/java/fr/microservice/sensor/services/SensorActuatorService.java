@@ -124,4 +124,13 @@ public class SensorActuatorService {
         }
         sensorRepository.saveAll(sensors);
     }
+
+    // update the hunidity and temperature values of a sensor
+    public void updateSensorHumidityTemperature(String sensorCode, double humidity, double temperature) {
+        Sensor sensor = sensorRepository.findByCode(sensorCode)
+                .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with code: " + sensorCode));
+        sensor.setHumidity(humidity);
+        sensor.setTemperature(temperature);
+        sensorRepository.save(sensor);
+    }
 }

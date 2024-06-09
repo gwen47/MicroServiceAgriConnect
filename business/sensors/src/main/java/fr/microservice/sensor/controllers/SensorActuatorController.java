@@ -78,4 +78,9 @@ public class SensorActuatorController {
     public void updateMeasurementIntervalForAll(@RequestParam int interval) {
         sensorActuatorService.updateMeasurementIntervalForAll(interval);
     }
+
+    @PostMapping("/sensor/update-humidity-temperature/{code}")
+    public void updateSensorHumidityTemperature(@PathVariable String code, @RequestParam double humidity, @RequestParam double temperature) {
+        sensorActuatorService.updateSensorHumidityTemperature(code, humidity, temperature);
+    }
 }
