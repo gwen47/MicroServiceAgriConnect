@@ -1,4 +1,5 @@
 package fr.microservice.sensor.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
@@ -6,6 +7,7 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
+import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
@@ -48,6 +50,20 @@ public class MqttConfig {
     }
 
     @Bean
+    MessageChannel mqttOutboundChannel() {
+        return new DirectChannel();
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = "mqttOutboundChannel")
+    MessageHandler mqttOutbound() {
+        MqttPahoMessageHandler messageHandler = new MqttPahoMessageHandler("springClient", mqttClientFactory());
+        messageHandler.setAsync(true);
+        messageHandler.setDefaultTopic("sensor/interval");
+        return messageHandler;
+    }
+
+    @Bean
     MessageChannel errorChannel() {
         return new DirectChannel();
     }
@@ -57,7 +73,6 @@ public class MqttConfig {
     MessageHandler handler() {
         return message -> {
             try {
-                // Handle the message here
                 String payload = (String) message.getPayload();
                 LOGGER.info("Received message: {}", payload);
                 // Add code to update your database here

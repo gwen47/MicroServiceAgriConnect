@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.microservice.sensor.config.MqttGateway;
 import fr.microservice.sensor.entities.Actuator;
 import fr.microservice.sensor.entities.IrrigationLog;
 import fr.microservice.sensor.entities.Sensor;
@@ -26,6 +27,9 @@ public class SensorActuatorService {
 
     @Autowired
     private IrrigationLogRepository irrigationLogRepository;
+
+    @Autowired
+    private MqttGateway mqttGateway;
 
     // List all sensors 
     public List<Sensor> listAllSensors() {
@@ -115,6 +119,7 @@ public class SensorActuatorService {
                 .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with code: " + sensorCode));
         sensor.setMeasurementInterval(interval);
         sensorRepository.save(sensor);
+        mqttGateway.sendToMqtt(sensor.getCode(), interval);
     }
 
     public void updateMeasurementIntervalForAll(int interval) {
