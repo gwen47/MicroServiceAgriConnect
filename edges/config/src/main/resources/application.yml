@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: config
+    cloud:
+    # local file system
+server:
+  port: 8081
+  

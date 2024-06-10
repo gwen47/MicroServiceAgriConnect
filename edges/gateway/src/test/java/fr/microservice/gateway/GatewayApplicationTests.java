@@ -1,11 +1,10 @@
-package fr.microservice.sensors;
+package fr.microservice.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 @SpringBootTest
-class SensorsApplicationTests {
+class GatewayApplicationTests {
 
 	@Test
 	void contextLoads() {

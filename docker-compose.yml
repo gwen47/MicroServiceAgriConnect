@@ -12,11 +12,11 @@ services:
       - "3306"
     volumes:
       - my-db:/var/lib/mysql
-  adminer : 
+  adminer:
     image: adminer
     restart: always
     ports:
-      - "9000:8080"
+      - "7000:8080"
   mosquitto:
     image: eclipse-mosquitto
     container_name: mqtt

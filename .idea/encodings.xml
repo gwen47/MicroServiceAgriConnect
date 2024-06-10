@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/business/sensors/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/edges/config/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/edges/gateway/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/edges/loadbalancer/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/edges/service-registry/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
