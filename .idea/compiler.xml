@@ -8,7 +8,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="sensors" />
-        <module name="loadbalancer" />
         <module name="config" />
         <module name="service-registry" />
         <module name="gateway" />

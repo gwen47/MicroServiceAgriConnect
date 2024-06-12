@@ -1,8 +1,14 @@
 spring:
   application:
     name: config
-    cloud:
-    # local file system
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          searchLocations: classpath:config/
+
 server:
   port: 8081
   
