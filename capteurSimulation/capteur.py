@@ -17,10 +17,9 @@ measurement_interval = 5  # Valeur initiale par défaut
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected to MQTT Broker!")
-        # S'abonner au sujet pour les mises à jour d'intervalle
-        client.subscribe(TOPIC_INTERVAL)
+        client.subscribe(TOPIC_INTERVAL)  # S'abonner au sujet pour les mises à jour d'intervalle
     else:
-        print("Failed to connect, return code %d\n", rc)
+        print(f"Failed to connect, return code {rc}")
 
 # Fonction appelée lors de la publication d'un message
 def on_publish(client, userdata, mid):
@@ -38,8 +37,9 @@ def on_message(client, userdata, msg):
     except Exception as e:
         print(f"Error processing message: {e}")
 
-# Création du client MQTT
-client = mqtt.Client(CLIENT_ID)
+# Création du client MQTT avec la spécification de l'API de callback
+client = mqtt.Client(CLIENT_ID, callback_api_version=2)
+
 client.on_connect = on_connect
 client.on_publish = on_publish
 client.on_message = on_message
@@ -62,21 +62,14 @@ def simulate_sensor_data():
 
 try:
     while True:
-        # Génération des données du capteur
         sensor_data = simulate_sensor_data()
         payload = json.dumps(sensor_data)
-        
-        # Publication des données sur le topic MQTT
         result = client.publish(TOPIC_DATA, payload)
-        
-        # Attente de la publication
         status = result[0]
         if status == 0:
             print(f"Sent `{payload}` to topic `{TOPIC_DATA}`")
         else:
             print(f"Failed to send message to topic {TOPIC_DATA}")
-        
-        # Attendre avant d'envoyer la prochaine donnée
         time.sleep(measurement_interval)
 except KeyboardInterrupt:
     print("Simulation stopped.")

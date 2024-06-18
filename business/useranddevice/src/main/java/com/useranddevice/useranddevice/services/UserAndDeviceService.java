@@ -36,4 +36,8 @@ public class UserAndDeviceService {
     public void deleteUserAndDevice(Long userId, String deviceId) {
         userAndDeviceRepository.deleteByUserIdAndDeviceId(userId, deviceId);
     }
+
+    public boolean existsByUserIdAndDeviceId(Long userId, String deviceId) {
+        return userAndDeviceRepository.existsByUserIdAndDeviceId(userId, deviceId); 
+    }
 }
