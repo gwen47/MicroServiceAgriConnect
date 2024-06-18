@@ -1,9 +1,11 @@
 package com.useranddevice.useranddevice.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.stat.Statistics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -79,17 +81,28 @@ public class UserAndDeviceController {
         double totalHumidity = 0;
         double totalTemperature = 0;
         int count = 0;
+        double latestHumidity = Double.NaN;
+        double latestTemperature = Double.NaN;
+        LocalDateTime latestTimestamp = LocalDateTime.MIN;
 
         for (UserAndDevice userAndDevice : userAndDevices) {
             if ("sensor".equals(userAndDevice.getType())) {
                 String url = "http://localhost:8090/api/sensors/" + userAndDevice.getDeviceId() + "/logs";
                 ResponseEntity<SensorData[]> response = restTemplate.getForEntity(url, SensorData[].class);
                 if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                    for (SensorData data : response.getBody()) {
+                    SensorData[] sensorData = response.getBody();
+                    for (SensorData data : sensorData) {
                         totalHumidity += data.getHumidity();
                         totalTemperature += data.getTemperature();
                         count++;
+                        // Check if the current data is more recent than the previous latest
+                        if (data.getTimestamp().isAfter(latestTimestamp)) {
+                            latestTimestamp = data.getTimestamp();
+                            latestHumidity = data.getHumidity();
+                            latestTemperature = data.getTemperature();
+                        }
                     }
+                 
                 } else {
                     return ResponseEntity.badRequest().body("Failed to get data for device with ID: " + userAndDevice.getDeviceId());
                 }
@@ -99,60 +112,88 @@ public class UserAndDeviceController {
         if (count > 0) {
             double averageHumidity = totalHumidity / count;
             double averageTemperature = totalTemperature / count;
-            return ResponseEntity.ok(new DeviceStatistics(averageHumidity, averageTemperature));
+            return ResponseEntity.ok(new DeviceStatistics(averageHumidity, averageTemperature, latestHumidity, latestTemperature));
         } else {
             return ResponseEntity.ok("No sensor data available for this user.");
         }
     }
 
-    static class SensorData {
-        private double humidity;
-        private double temperature;
+        static class SensorData {
+            private double humidity;
+            private double temperature;
+            private LocalDateTime timestamp;
 
-        public double getHumidity() {
-            return humidity;
+            public double getHumidity() {
+                return humidity;
+            }
+
+            public void setHumidity(double humidity) {
+                this.humidity = humidity;
+            }
+
+            public double getTemperature() {
+                return temperature;
+            }
+
+            public void setTemperature(double temperature) {
+                this.temperature = temperature;
+            }
+
+            public LocalDateTime getTimestamp() {
+                return timestamp;
+            }
+
+            public void setTimestamp(LocalDateTime timestamp) {
+                this.timestamp = timestamp;
+            }
         }
 
-        public void setHumidity(double humidity) {
-            this.humidity = humidity;
+        static class DeviceStatistics {
+            private double averageHumidity;
+            private double averageTemperature;
+            private double latestHumidity;
+            private double latestTemperature;
+
+            public DeviceStatistics(double averageHumidity, double averageTemperature, double latestHumidity, double latestTemperature) {
+                this.averageHumidity = averageHumidity;
+                this.averageTemperature = averageTemperature;
+                this.latestHumidity = latestHumidity;
+                this.latestTemperature = latestTemperature;
+            }
+            // getters and setters
+            public double getAverageHumidity() {
+                return averageHumidity;
+            }
+
+            public void setAverageHumidity(double averageHumidity) {
+                this.averageHumidity = averageHumidity;
+            }
+
+            public double getAverageTemperature() {
+                return averageTemperature;
+            }
+
+            public void setAverageTemperature(double averageTemperature) {
+                this.averageTemperature = averageTemperature;
+            }
+
+            public double getLatestHumidity() {
+                return latestHumidity;
+            }
+
+            public void setLatestHumidity(double latestHumidity) {
+                this.latestHumidity = latestHumidity;
+            }
+
+            public double getLatestTemperature() {
+                return latestTemperature;
+            }
+
+            public void setLatestTemperature(double latestTemperature) {
+                this.latestTemperature = latestTemperature;
+            }
+
         }
-
-        public double getTemperature() {
-            return temperature;
-        }
-
-        public void setTemperature(double temperature) {
-            this.temperature = temperature;
-        }
-    }
-
-    static class DeviceStatistics {
-        private double averageHumidity;
-        private double averageTemperature;
-
-        public DeviceStatistics(double averageHumidity, double averageTemperature) {
-            this.averageHumidity = averageHumidity;
-            this.averageTemperature = averageTemperature;
-        }
-
-        // getters and setters
-        public double getAverageHumidity() {
-            return averageHumidity;
-        }
-
-        public void setAverageHumidity(double averageHumidity) {
-            this.averageHumidity = averageHumidity;
-        }
-
-        public double getAverageTemperature() {
-            return averageTemperature;
-        }
-
-        public void setAverageTemperature(double averageTemperature) {
-            this.averageTemperature = averageTemperature;
-        }
-
-    }
 
 
 }
