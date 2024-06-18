@@ -27,7 +27,13 @@ public class ActuatorService {
         return actuatorRepository.findByCode(code);
     }
 
+    public Optional<Actuator> getActuatorById(String id) {
+        return actuatorRepository.findById(id);
+    }
+
     public void deleteActuatorByCode(String code) {
         actuatorRepository.findByCode(code).ifPresent(actuatorRepository::delete);
     }
+
+    // 
 }

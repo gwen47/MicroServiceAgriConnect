@@ -48,9 +48,16 @@ public class SensorController {
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<Sensor> getSensorById(@PathVariable String code) {
+    public ResponseEntity<Sensor> getSensorByCode(@PathVariable String code) {
         Sensor sensor = sensorService.getSensorByCode(code)
                 .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with code: " + code));
+        return ResponseEntity.ok(sensor);
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<Sensor> getSensorById(@PathVariable String id) {
+        Sensor sensor = sensorService.getSensorByCode(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Sensor not found with code: " + id));
         return ResponseEntity.ok(sensor);
     }
 
