@@ -1,5 +1,6 @@
 package com.actuator.actuator.controllers;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -52,6 +53,33 @@ public class ActuatorController {
             .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // obtenir l'état d'arrosage d'un actuateur
+    @GetMapping("/{code}/irrigation-status")
+    public ResponseEntity<String> getIrrigationStatus(@PathVariable String code) {
+        Actuator actuator = actuatorService.getActuatorByCode(code)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actuator not found"));
+
+        // calcule le temps restant d'arrosage avec la durée d'arrosage présent dans les logs d'irrigation
+        // il faut récupérer le dernier log 
+        List<IrrigationLog> logs = irrigationLogService.getLogsByActuator(code);
+        long remainingTime = 0;
+        if (!logs.isEmpty()) {
+            IrrigationLog lastLog = logs.get(logs.size() - 1);
+            LocalDateTime startTime = lastLog.getStartTime();
+            LocalDateTime endTime = lastLog.getEndTime();
+            if (endTime == null) {
+                Duration duration = Duration.between(startTime, LocalDateTime.now());
+                remainingTime = actuator.getIrrigationDuration() - duration.getSeconds();
+            }
+        }
+        // retourner la valeur de l'état d'arrosage de l'actuateur
+        if (actuator.isIrrigating()) {
+            return ResponseEntity.ok("Irrigating for " + remainingTime + " seconds");
+        } else {
+            return ResponseEntity.ok("Not irrigating");
+        }
+    }
+
     @DeleteMapping("/{code}")
     public ResponseEntity<Void> deleteActuatorByCode(@PathVariable String code) {
         actuatorService.deleteActuatorByCode(code);
@@ -64,9 +92,13 @@ public class ActuatorController {
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actuator not found"));
         IrrigationLog log = new IrrigationLog();
         log.setActuatorId(actuatorId);
-        log.setStartTime(LocalDateTime.now());
+        LocalDateTime localTime = LocalDateTime.now();
+        log.setStartTime(localTime);
         log.setStatus("started");
         irrigationLogService.saveIrrigationLog(log);
+        actuator.setIrrigating(true);
+        actuator.setIrrigationDuration(duration);
+        actuatorService.saveActuator(actuator);
         return ResponseEntity.ok().build();
     }
 
@@ -79,6 +111,12 @@ public class ActuatorController {
             lastLog.setStatus("ended");
             irrigationLogService.saveIrrigationLog(lastLog);
         }
+
+        Actuator actuator = actuatorService.getActuatorByCode(actuatorId)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actuator not found"));
+        actuator.setIrrigating(false);
+        actuator.setIrrigationDuration(0);
+        actuatorService.saveActuator(actuator);
         return ResponseEntity.ok().build();
     }
 
@@ -86,4 +124,5 @@ public class ActuatorController {
     public List<IrrigationLog> getIrrigationLogsByActuator(@PathVariable String actuatorId) {
         return irrigationLogService.getLogsByActuator(actuatorId);
     }
+
 }

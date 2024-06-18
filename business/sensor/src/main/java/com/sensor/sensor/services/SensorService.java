@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.sensor.sensor.entities.Sensor;
+import com.sensor.sensor.exceptions.ResourceNotFoundException;
 import com.sensor.sensor.repositories.SensorRepo;
 
 @Service
@@ -35,6 +36,10 @@ public class SensorService {
         sensorRepository.deleteById(id);
     }
 
+    public boolean existsByCode(String code) {
+        return sensorRepository.existsByCode(code);
+    }
+    
     public Sensor updateSensor(String id, Sensor updatedSensor) {
         return sensorRepository.findById(id)
             .map(sensor -> {
@@ -51,5 +56,14 @@ public class SensorService {
                 updatedSensor.setId(id);
                 return sensorRepository.save(updatedSensor);
             });
+    }
+
+    // mettre à jour l'intervalle de mesure pour tous les capteurs
+    public void updateMeasurementIntervalForAll (int interval) {
+        List<Sensor> sensors = sensorRepository.findAll();
+        for (Sensor sensor : sensors) {
+            sensor.setMeasurementInterval(interval);
+            sensorRepository.save(sensor);
+        }
     }
 }
