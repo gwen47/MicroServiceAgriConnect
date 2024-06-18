@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.9'
 
 services:
   db:
@@ -12,16 +12,27 @@ services:
       - "3306"
     volumes:
       - my-db:/var/lib/mysql
-  adminer : 
-    image: adminer
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
     restart: always
     ports:
-      - "9000:8080"
+      - "27017:27017"
+    volumes:
+      - mongo-db:/data/db
+  mongodb_actuator:
+    image: mongo:latest
+    container_name: "mongodb_actuator"
+    restart: always
+    ports:
+      - "27020:27017"
+    volumes:
+      - mongo-db-actuator:/data/db
   mosquitto:
     image: eclipse-mosquitto
     container_name: mqtt
     volumes:
-      - config:/mosquitto/config:rw
+      - ./config:/mosquitto/config:rw
       - data:/mosquitto/data:rw
       - log:/mosquitto/log:rw
     restart: unless-stopped
@@ -31,6 +42,8 @@ services:
 
 volumes:
   my-db:
+  mongo-db:
   config:
   data:
   log:
+  mongo-db-actuator:

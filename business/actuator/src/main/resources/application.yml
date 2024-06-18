@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: actuators
+  data:
+    mongodb:
+      uri: mongodb://localhost:27020/actuator
+
+server :
+  port : 9090
