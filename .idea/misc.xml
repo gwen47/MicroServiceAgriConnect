@@ -11,10 +11,14 @@
         <option value="$PROJECT_DIR$/edges/service-registry/pom.xml" />
         <option value="$PROJECT_DIR$/edges/config/pom.xml" />
         <option value="$PROJECT_DIR$/business/sensors/pom.xml" />
-        <option value="$PROJECT_DIR$/edges/loadbalancer/pom.xml" />
         <option value="$PROJECT_DIR$/edges/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/business/sensor/pom.xml" />
+        <option value="$PROJECT_DIR$/business/actuator/pom.xml" />
+        <option value="$PROJECT_DIR$/business/plateforme/pom.xml" />
+        <option value="$PROJECT_DIR$/business/user/pom.xml" />
+        <option value="$PROJECT_DIR$/business/useranddevice/pom.xml" />
       </list>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_22" default="true" project-jdk-name="openjdk-22" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="openjdk-22" project-jdk-type="JavaSDK" />
 </project>

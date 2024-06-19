@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: sensors
+  data:
+    mongodb:
+      uri: mongodb://localhost/docker-db
+
+server :
+    port : 8090

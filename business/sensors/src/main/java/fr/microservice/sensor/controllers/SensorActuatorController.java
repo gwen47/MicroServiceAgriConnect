@@ -1,11 +1,13 @@
 package fr.microservice.sensor.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import fr.microservice.sensor.entities.Actuator;
 import fr.microservice.sensor.entities.IrrigationLog;
 import fr.microservice.sensor.entities.Sensor;
+import fr.microservice.sensor.model.IntervalUpdateRequest;
 import fr.microservice.sensor.services.SensorActuatorService;
 
 import java.util.List;
@@ -69,9 +71,10 @@ public class SensorActuatorController {
         return sensorActuatorService.getIrrigationLogs();
     }
 
-    @PostMapping("/sensor/update-interval/{code}")
-    public void updateMeasurementInterval(@PathVariable String code, @RequestParam int interval) {
-        sensorActuatorService.updateMeasurementInterval(code, interval);
+    @PutMapping("/sensor/update-interval/{code}")
+    public ResponseEntity<Void> updateMeasurementInterval(@PathVariable String code, @RequestBody IntervalUpdateRequest request) {       
+        sensorActuatorService.updateMeasurementInterval(code, request.getInterval());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/sensors/update-interval")
@@ -83,4 +86,5 @@ public class SensorActuatorController {
     public void updateSensorHumidityTemperature(@PathVariable String code, @RequestParam double humidity, @RequestParam double temperature) {
         sensorActuatorService.updateSensorHumidityTemperature(code, humidity, temperature);
     }
+
 }
