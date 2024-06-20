@@ -88,6 +88,9 @@ public class ActuatorController {
 
     @PostMapping("/{actuatorId}/start-irrigation")
     public ResponseEntity<Void> startIrrigation(@PathVariable String actuatorId, @RequestParam long duration) {
+        if (duration < 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect value, duration must be positive or equal to zero");
+        }
         Actuator actuator = actuatorService.getActuatorByCode(actuatorId)
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Actuator not found"));
         IrrigationLog log = new IrrigationLog();

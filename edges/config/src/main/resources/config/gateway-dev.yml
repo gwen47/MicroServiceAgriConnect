@@ -4,10 +4,29 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: sensors
-          uri: lb://sensors # Load balance the request to the sensors service
+        # lb is a shortcut for loadbalancer
+        - id: sensor
+          uri: lb://sensor
           predicates:
-            - Path=/api/** # Route the request to the sensors service if the path starts with /api
+            - Path=/api/sensors/**
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/api/users/**
+        - id: actuators
+          uri: lb://actuators
+          predicates:
+            - Path=/api/actuators/**
+        - id: user-devices
+          uri: lb://useranddevice
+          predicates:
+            - Path=/api/user-devices/**
+        - id: stat
+          uri: lb://stat
+          predicates:
+              - Path=/api/stats/**
+
+
 server:
   port: 9000
 eureka:

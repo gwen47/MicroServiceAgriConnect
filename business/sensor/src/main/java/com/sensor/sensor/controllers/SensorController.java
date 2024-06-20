@@ -46,7 +46,7 @@ public class SensorController {
     public List<Sensor> getAllSensors() {
         return sensorService.getAllSensors();
     }
-`
+
     @GetMapping("/{code}")
     public ResponseEntity<Sensor> getSensorByCode(@PathVariable String code) {
         Sensor sensor = sensorService.getSensorByCode(code)

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: sensors
+    name: sensor
   profiles:
     active: dev
   config:

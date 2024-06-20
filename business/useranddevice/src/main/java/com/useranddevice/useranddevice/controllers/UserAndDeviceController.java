@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.stat.Statistics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +29,12 @@ public class UserAndDeviceController {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${sensors-url}")
+    private String sensorsURL;
+
+    @Value("${actuators-url}")
+    private String actuatorsURL;
+
     @PostMapping
     public ResponseEntity<?> createUserAndDevice(@RequestBody UserAndDevice userAndDevice) {
         // si l'association existe déjà on ne la recrée pas
@@ -37,9 +44,11 @@ public class UserAndDeviceController {
 
         String url = "";
         if (userAndDevice.getType().equals("sensor") ) {
-            url = "http://localhost:8090/api/sensors/" + userAndDevice.getDeviceId();
+            // TODO we should use FeignClient here
+            url = sensorsURL + userAndDevice.getDeviceId();
         } else {
-            url = "http://localhost:9090/api/actuators/" + userAndDevice.getDeviceId();
+            // TODO we should use FeignClient here
+            url = actuatorsURL + userAndDevice.getDeviceId();
         }
 
         System.out.println(url);
@@ -87,7 +96,8 @@ public class UserAndDeviceController {
 
         for (UserAndDevice userAndDevice : userAndDevices) {
             if ("sensor".equals(userAndDevice.getType())) {
-                String url = "http://localhost:8090/api/sensors/" + userAndDevice.getDeviceId() + "/logs";
+                // TODO we should use FeignClient here
+                String url = sensorsURL + userAndDevice.getDeviceId() + "/logs";
                 ResponseEntity<SensorData[]> response = restTemplate.getForEntity(url, SensorData[].class);
                 if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                     SensorData[] sensorData = response.getBody();

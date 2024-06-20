@@ -8,14 +8,15 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="actuator" />
+        <module name="stat" />
         <module name="sensors" />
         <module name="useranddevice" />
         <module name="sensor" />
         <module name="plateforme" />
-        <module name="config" />
         <module name="user" />
-        <module name="service-registry" />
+        <module name="config" />
         <module name="gateway" />
+        <module name="service-registry" />
       </profile>
     </annotationProcessing>
   </component>
@@ -23,11 +24,12 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="actuator" options="-parameters" />
       <module name="config" options="-parameters" />
+      <module name="gateway" options="-parameters" />
       <module name="plateforme" options="-parameters" />
       <module name="sensor" options="-parameters" />
-      <module name="gateway" options="-parameters" />
       <module name="sensors" options="-parameters" />
       <module name="service-registry" options="-parameters" />
+      <module name="stat" options="-parameters" />
       <module name="user" options="-parameters" />
       <module name="useranddevice" options="-parameters" />
     </option>
