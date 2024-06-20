@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: sensor
+  data:
+    mongodb:
+      uri: mongodb://localhost/docker-db
+
+server :
+  port : 8090
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/ # Eureka server host
+  instance:
+    preferIpAddress: true # Optional, for preferring IP address in registration

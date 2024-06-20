@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: useranddevice
+  datasource:
+    url: jdbc:mysql://localhost:3306/mysql
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+server:
+  port: 10050
+
+# Gateway URLs
+sensors-url: http://localhost:9000/api/sensors/
+actuators-url: http://localhost:9000/api/actuators/

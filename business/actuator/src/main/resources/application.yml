@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: actuator
+  profiles:
+    active: dev
+  config:
+    import: configserver:http://localhost:8081

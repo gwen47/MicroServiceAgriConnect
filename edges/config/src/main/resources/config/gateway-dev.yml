@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        # lb is a shortcut for loadbalancer
+        - id: sensor
+          uri: lb://sensor
+          predicates:
+            - Path=/api/sensors/**
+        - id: user
+          uri: lb://user
+          predicates:
+            - Path=/api/users/**
+        - id: actuators
+          uri: lb://actuators
+          predicates:
+            - Path=/api/actuators/**
+        - id: user-devices
+          uri: lb://useranddevice
+          predicates:
+            - Path=/api/user-devices/**
+        - id: stat
+          uri: lb://stat
+          predicates:
+              - Path=/api/stats/**
+
+
+server:
+  port: 9000
+eureka:
+  client:
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

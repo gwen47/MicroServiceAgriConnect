@@ -10,6 +10,14 @@
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/edges/service-registry/pom.xml" />
         <option value="$PROJECT_DIR$/edges/config/pom.xml" />
+        <option value="$PROJECT_DIR$/business/sensors/pom.xml" />
+        <option value="$PROJECT_DIR$/edges/gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/business/sensor/pom.xml" />
+        <option value="$PROJECT_DIR$/business/actuator/pom.xml" />
+        <option value="$PROJECT_DIR$/business/plateforme/pom.xml" />
+        <option value="$PROJECT_DIR$/business/user/pom.xml" />
+        <option value="$PROJECT_DIR$/business/useranddevice/pom.xml" />
+        <option value="$PROJECT_DIR$/business/stat/pom.xml" />
       </list>
     </option>
   </component>
